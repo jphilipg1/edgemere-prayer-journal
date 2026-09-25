@@ -91,6 +91,7 @@ const privacyText=[
  'Clearing browser/site data, private browsing, browser storage removal, or losing the device may erase your journal. There is no automatic sync or backup.',
  'You can create an encrypted backup and save it wherever you choose. Edgemere does not receive your backup or its password, and cannot recover a forgotten backup password.',
  'Journal storage is not encrypted. Someone who can access this device and browser may be able to read it. Use a trusted personal device and record only what you need to remember.',
+ 'If you enable follow-up notifications, the separate notification service stores a technical push subscription and generic reminder dates. It never receives names, prayers, notes or backups. Disable notifications to remove those records.',
  'The hosting provider serves application files and may receive ordinary website access information such as your IP address. Our app does not send it your journal entries or use analytics.'
 ];
 document.querySelectorAll('.privacy-copy').forEach(n=>privacyText.forEach(t=>n.append(el('p',t))));
