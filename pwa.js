@@ -11,8 +11,9 @@ window.JournalPWA=(()=>{
  function controls(){
   $('enable-notifications').hidden=!!local?.enabled||!CONFIG.serviceUrl||!capable()||Notification.permission==='denied';
   $('test-notification').hidden=!local?.enabled||!capable()||Notification.permission!=='granted';
+  $('scheduled-test-notification').hidden=$('test-notification').hidden;
   $('disable-notifications').hidden=!local?.token;
-  for(const id of ['enable-notifications','test-notification','disable-notifications'])$(id).disabled=busy;
+  for(const id of ['enable-notifications','test-notification','scheduled-test-notification','disable-notifications'])$(id).disabled=busy;
  }
  async function api(path,body,token=local?.token){const response=await fetch(CONFIG.serviceUrl+path,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(body),credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',signal:AbortSignal.timeout(15000)});if(!response.ok){const e=Error('service');e.code=response.status;throw e;}return response.json();}
  async function getConfig(){if(config)return config;const res=await fetch(CONFIG.serviceUrl+'/config',{credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',signal:AbortSignal.timeout(15000)});if(!res.ok)throw Error('service');config=await res.json();return config;}
@@ -61,6 +62,7 @@ window.JournalPWA=(()=>{
  };
  $('disable-notifications').onclick=disable;
  $('test-notification').onclick=async()=>{if(busy||!local?.enabled)return;busy=true;controls();try{await api('/test',{});status('Test push accepted by your device’s push service. Check for “Notifications are working.”');}catch(e){if(e.code===410){local.enabled=false;local.needsRenewal=true;persist();status('Your subscription expired. Enable notifications again.');}else status(e.code===429?'Please wait a minute before sending another test.':'The test push could not be sent. Check your connection and try again.');}finally{busy=false;controls();}};
+ $('scheduled-test-notification').onclick=async()=>{if(busy||!local?.enabled)return;busy=true;controls();try{await api('/schedule-test',{});status('Test scheduled. Close the Prayer Journal and lock your phone.');}catch(e){if(e.code===410){local.enabled=false;local.needsRenewal=true;persist();status('Your subscription expired. Enable notifications again.');}else status(e.code===429?'Please wait two minutes before scheduling another test.':'The test could not be scheduled. Check your connection and try again.');}finally{busy=false;controls();if(again){again=false;queueMicrotask(()=>sync());}}};
  window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;$('install-app').hidden=false;});
  $('install-app').onclick=async()=>{if(installPrompt){await installPrompt.prompt();installPrompt=null;$('install-app').hidden=true;}};window.addEventListener('appinstalled',()=>{$('install-app').hidden=true;});
  function showDue(){if(!data.privacyAccepted)return;go(null);$('followups').scrollIntoView({block:'start'});$('followups').tabIndex=-1;$('followups').focus({preventScroll:true});}
