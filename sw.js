@@ -2,8 +2,8 @@
 // Static shell only. This worker never reads the journal or contacts push services.
 const BASE = new URL('./',self.location.href).href;
 const PREFIX = 'edgemere-shell-' + new URL(BASE).pathname + '-';
-const CACHE = PREFIX + 'v5-person-workflow';
-const ASSETS = ['./','index.html','styles.css','storage.js','guide.js','app.js','pwa.js','manifest.webmanifest','edgemere-logo.webp','icon-192.png','icon-512.png'].map(path=>new URL(path,BASE).href);
+const CACHE = PREFIX + 'v6-encrypted-backup';
+const ASSETS = ['./','index.html','styles.css','storage.js','guide.js','app.js','pwa.js','backup-crypto.js','backup-ui.js','manifest.webmanifest','edgemere-logo.webp','icon-192.png','icon-512.png'].map(path=>new URL(path,BASE).href);
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS))));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{
  const names=await caches.keys();await Promise.all(names.filter(name=>name.startsWith(PREFIX)&&name!==CACHE).map(name=>caches.delete(name)));await self.clients.claim();

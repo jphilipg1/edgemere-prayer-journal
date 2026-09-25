@@ -14,5 +14,5 @@ window.JournalStore = (() => {
   }
   function load() { const raw = localStorage.getItem(key); const data = raw === null ? {version:1,privacyAccepted:false,people:[]} : JSON.parse(raw); if (!valid(data)) throw Error('unreadable'); return {raw,data}; }
   function write(data, expected) { if (localStorage.getItem(key) !== expected) throw Error('conflict'); if (!valid(data)) throw Error('invalid'); const raw = JSON.stringify(data); localStorage.setItem(key,raw); return raw; }
-  return {key,date,load,write};
+  return {key,date,load,write,valid};
 })();

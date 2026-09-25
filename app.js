@@ -88,7 +88,8 @@ async function checkDue(){if(locked||!data.privacyAccepted||document.hidden)retu
 const privacyText=[
  'This is your personal prayer journal. No account is required. Your journal stays in this browser on this device; it is not uploaded to GitHub or an Edgemere database.',
  'Edgemere Church of Christ, ministers, elders, staff, and other users cannot see your entries through this app. Other devices and browsers have their own separate journals.',
- 'There is no automatic sync, backup, or recovery. Clearing browser/site data, private browsing, browser storage removal, or losing the device may erase your journal.',
+ 'Clearing browser/site data, private browsing, browser storage removal, or losing the device may erase your journal. There is no automatic sync or backup.',
+ 'You can create an encrypted backup and save it wherever you choose. Edgemere does not receive your backup or its password, and cannot recover a forgotten backup password.',
  'Journal storage is not encrypted. Someone who can access this device and browser may be able to read it. Use a trusted personal device and record only what you need to remember.',
  'The hosting provider serves application files and may receive ordinary website access information such as your IP address. Our app does not send it your journal entries or use analytics.'
 ];
