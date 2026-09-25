@@ -24,7 +24,7 @@
    if(JSON.stringify(check.journal)!==JSON.stringify(current.data))throw Error('verification');
    if(localStorage.getItem(recovery?RECOVERY:JournalStore.key)!==snapshot)throw Error('conflict');
    file=new File([serialized],`Edgemere-Prayer-Journal-${recovery?'Pre-Restore-':''}Backup-${result.createdAt.replace(/[:.]/g,'-')}.epjbackup`,{type:'application/octet-stream'});
-   progress.textContent='Backup created';d.append(el('p',summary(check.counts).replace(/ · /g,'\n'),'backup-counts'),el('p','Your backup contains a copy of your Prayer Journal. Save it somewhere you trust, such as Files, iCloud Drive, or Google Drive.'),el('p','This file is not password-encrypted. Edgemere does not receive it.'));
+   progress.textContent='Backup created';d.append(el('p',summary(check.counts).replace(/ · /g,'\n'),'backup-counts'),el('p','Your backup contains a copy of your Prayer Journal. Save it somewhere you trust.'),el('p','Edgemere does not receive or store your journal or backup.'));
    const row=el('div',undefined,'actions');const saved=button('I saved the backup',()=>{
     if(recovery){d.close();return;}
     if(localStorage.getItem(JournalStore.key)!==snapshot){error.textContent='Your journal changed after this backup was created. Make a new backup to include the latest entries.';return;}
@@ -39,18 +39,16 @@
   }catch(e){if(!closed){progress.textContent='';error.textContent='Backup could not be created correctly. Your journal has not been changed.';}}
  }
  function restore(){
-  if(!ready)return;const {d,error,progress}=dialog('Restore Journal');d.append(el('p','Choose a backup, review its contents, then confirm replacement. Existing encrypted backups are also supported.'));
+  if(!ready)return;const {d,error,progress}=dialog('Restore Journal');d.append(el('p','Choose a backup, review its contents, then confirm replacement.'));
   const f=el('form'),label=el('label','Choose Backup'),input=el('input');label.htmlFor='backup-file';input.type='file';input.id='backup-file';input.accept='.epjbackup,application/octet-stream,application/json';input.required=true;f.append(label,input);
-  const pwLabel=el('label','Backup Password'),pw=el('input');pwLabel.htmlFor='restore-password';pw.id='restore-password';pw.type='password';pw.maxLength=1024;pw.autocomplete='off';pwLabel.hidden=pw.hidden=true;f.append(pwLabel,pw);
   const actions=el('div',undefined,'actions'),open=el('button','Preview Backup');open.type='submit';actions.append(open,button('Cancel',()=>d.close()));f.append(actions);d.append(f);
   let candidate=null,expected=null,closed=false,busy=false,restored=false;
-  d.addEventListener('close',()=>{closed=true;candidate=null;pw.value='';input.value='';d.remove();if(restored)location.reload();});
-  input.onchange=()=>{pw.value='';pw.hidden=pwLabel.hidden=true;pw.required=false;error.textContent='';};
+  d.addEventListener('close',()=>{closed=true;candidate=null;input.value='';d.remove();if(restored)location.reload();});
+  input.onchange=()=>{error.textContent='';};
   f.onsubmit=async e=>{e.preventDefault();if(busy)return;busy=true;open.disabled=true;error.textContent='';progress.textContent='Checking backup…';
    try{
     const current=JournalStore.load();expected=current.raw;const file=input.files[0];if(!file||file.size>JournalBackup.MAX_FILE)throw Error('invalid');const text=await file.text();if(closed)return;
-    if(JournalBackup.inspect(text).encrypted&&!pw.value){pw.hidden=pwLabel.hidden=false;pw.required=true;progress.textContent='This is an older encrypted backup. Enter its password to preview it.';pw.focus();return;}
-    let password=pw.value;pw.value='';let result;try{result=await JournalBackup.open(text,password);}finally{password='';}if(closed)return;
+    const result=await JournalBackup.open(text);if(closed)return;
     if(localStorage.getItem(JournalStore.key)!==expected)throw Error('conflict');candidate=result.journal;const risk=JournalBackup.restoreRisk(current.data,candidate);f.hidden=true;progress.textContent='';
     const review=el('section',undefined,'restore-review');review.append(el('h3','Review backup contents'),el('p',`Backup created: ${new Date(result.createdAt).toLocaleString()}`),el('h4','Current journal'),el('p',summary(risk.current)),el('h4','Backup'),el('p',summary(risk.backup)));
     const row=el('div',undefined,'actions');row.append(button('Cancel',()=>d.close()));
@@ -70,8 +68,8 @@
      },'');commit.disabled=true;consent.onchange=()=>{commit.disabled=!consent.checked;};row.append(commit);
     }
     review.append(row);d.append(review);review.tabIndex=-1;review.focus();
-   }catch(e){if(!closed){error.textContent=e.message==='conflict'?'Your journal changed while reading the backup. Nothing was replaced. Close and try again.':'The backup could not be validated. Check the file or, for an encrypted backup, its password. Your current journal is unchanged.';progress.textContent='';}}
-   finally{pw.value='';busy=false;open.disabled=false;}
+   }catch(e){if(!closed){error.textContent=e.message==='conflict'?'Your journal changed while reading the backup. Nothing was replaced. Close and try again.':'This backup is unsupported, incomplete or damaged. Your current journal is unchanged.';progress.textContent='';}}
+   finally{busy=false;open.disabled=false;}
   };d.showModal();
  }
  $('backup-create').onclick=()=>create();$('backup-now').onclick=()=>create();$('backup-restore').onclick=restore;
