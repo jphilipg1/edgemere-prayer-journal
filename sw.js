@@ -3,7 +3,7 @@ importScripts('push-config.js');
 // Cache only the static shell; notification requests pass through without caching.
 const BASE = new URL('./',self.location.href).href;
 const PREFIX = 'edgemere-shell-' + new URL(BASE).pathname + '-';
-const CACHE = PREFIX + 'v7-web-push';
+const CACHE = PREFIX + 'v8-backup-safety';
 const ASSETS = ['./','index.html','styles.css','storage.js','guide.js','app.js','pwa.js','push-config.js','push-schedule.js','backup-crypto.js','backup-ui.js','manifest.webmanifest','edgemere-logo.webp','icon-192.png','icon-512.png'].map(path=>new URL(path,BASE).href);
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS))));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{

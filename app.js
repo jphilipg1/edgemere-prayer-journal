@@ -89,7 +89,7 @@ const privacyText=[
  'This is your personal prayer journal. No account is required. Your journal stays in this browser on this device; it is not uploaded to GitHub or an Edgemere database.',
  'Edgemere Church of Christ, ministers, elders, staff, and other users cannot see your entries through this app. Other devices and browsers have their own separate journals.',
  'Clearing browser/site data, private browsing, browser storage removal, or losing the device may erase your journal. There is no automatic sync or backup.',
- 'You can create an encrypted backup and save it wherever you choose. Edgemere does not receive your backup or its password, and cannot recover a forgotten backup password.',
+ 'Your backup contains a copy of your Prayer Journal. Save it somewhere you trust, such as Files, iCloud Drive, or Google Drive. New backups are not password-encrypted. Edgemere does not receive them. Older encrypted backups still require their original password.',
  'Journal storage is not encrypted. Someone who can access this device and browser may be able to read it. Use a trusted personal device and record only what you need to remember.',
  'If you enable follow-up notifications, the separate notification service stores a technical push subscription and generic reminder dates. It never receives names, prayers, notes or backups. Disable notifications to remove those records.',
  'The hosting provider serves application files and may receive ordinary website access information such as your IP address. Our app does not send it your journal entries or use analytics.'
